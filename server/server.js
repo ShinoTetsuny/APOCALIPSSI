@@ -1,4 +1,5 @@
 const express = require('express');
+const connectDB = require('./config/db');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -6,6 +7,10 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const pdfRoutes = require('./routes/pdfRoutes');
+
+
+// Connexion à MongoDB
+connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
