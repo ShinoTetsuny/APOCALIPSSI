@@ -7,7 +7,7 @@ const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 120000, // 2 minutes pour l'analyse
   headers: {
-    'Content-Type': 'multipart/form-data',
+    'Content-Type': 'application/json',
   },
 });
 
@@ -15,6 +15,13 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     console.log(`🚀 Requête API: ${config.method?.toUpperCase()} ${config.url}`);
+    
+    // Ajouter le token d'authentification s'il existe
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    
     return config;
   },
   (error) => {
@@ -40,16 +47,25 @@ apiClient.interceptors.response.use(
       
       switch (status) {
         case 400:
-          errorMessage = data.message || 'Données invalides';
+          errorMessage = data.error || data.message || 'Données invalides';
+          break;
+        case 401:
+          errorMessage = data.error || 'Non autorisé';
+          // Déconnecter l'utilisateur si le token est invalide
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('authUser');
+          break;
+        case 409:
+          errorMessage = data.error || 'Conflit de données';
           break;
         case 413:
           errorMessage = 'Fichier trop volumineux';
           break;
         case 500:
-          errorMessage = data.message || 'Erreur interne du serveur';
+          errorMessage = data.error || data.message || 'Erreur interne du serveur';
           break;
         default:
-          errorMessage = data.message || `Erreur ${status}`;
+          errorMessage = data.error || data.message || `Erreur ${status}`;
       }
     } else if (error.request) {
       // Erreur de réseau
@@ -62,6 +78,38 @@ apiClient.interceptors.response.use(
     return Promise.reject(new Error(errorMessage));
   }
 );
+
+// === FONCTIONS D'AUTHENTIFICATION ===
+
+/**
+ * Connexion utilisateur
+ * @param {string} username - Nom d'utilisateur
+ * @param {string} password - Mot de passe
+ * @returns {Promise<Object>} - Token et informations utilisateur
+ */
+export const login = async (username, password) => {
+  try {
+    const response = await apiClient.post('/auth/login', { username, password });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Inscription utilisateur
+ * @param {string} username - Nom d'utilisateur
+ * @param {string} password - Mot de passe
+ * @returns {Promise<Object>} - Message de confirmation
+ */
+export const register = async (username, password) => {
+  try {
+    const response = await apiClient.post('/auth/register', { username, password });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * Analyse un document (PDF, Word, etc.)
