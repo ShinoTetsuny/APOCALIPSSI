@@ -16,7 +16,7 @@ const Header = () => {
               </div>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">PDF Analyzer</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Document Analyzer</h1>
               <p className="text-sm text-gray-600">Analyse intelligente de documents</p>
             </div>
           </div>
