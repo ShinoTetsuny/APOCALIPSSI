@@ -1,6 +1,4 @@
-const UploadedFile = require('../models/UploadedFile');
-
-const validatePDFFile = async (req, res, next) => {
+const validatePDFFile = (req, res, next) => {
   try {
     // Vérifier si un fichier a été uploadé
     if (!req.file) {
@@ -35,25 +33,7 @@ const validatePDFFile = async (req, res, next) => {
       });
     }
 
-
-    // Enregistrer dans MongoDB
-    try {
-      const uploadedFile = new UploadedFile({
-        originalName: req.file.originalname,
-        size: req.file.size,
-        path: req.file.path,
-        mimetype: req.file.mimetype
-      });
-      await uploadedFile.save();
-      console.log(`✅ Fichier validé et enregistré: ${req.file.originalname} (${req.file.size} bytes)`);
-    } catch (dbError) {
-      console.error('❌ Erreur lors de l\'enregistrement dans MongoDB:', dbError);
-      return res.status(500).json({
-        error: 'Erreur lors de l\'enregistrement du fichier',
-        message: dbError.message
-      });
-    }
-
+    console.log(`✅ Fichier validé: ${req.file.originalname} (${req.file.size} bytes)`);
     next();
 
   } catch (error) {

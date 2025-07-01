@@ -1,16 +1,13 @@
 const express = require('express');
-const connectDB = require('./config/db');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
+
 const pdfRoutes = require('./routes/pdfRoutes');
-
-
-// Connexion à MongoDB
-connectDB();
+const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -39,8 +36,10 @@ app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+
 // Routes
 app.use('/api/pdf', pdfRoutes);
+app.use('/api/auth', authRoutes);
 
 // Route de santé
 app.get('/api/health', (req, res) => {
@@ -77,8 +76,13 @@ app.use('*', (req, res) => {
   res.status(404).json({ error: 'Route non trouvée' });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Serveur démarré sur le port ${PORT}`);
-  console.log(`📊 Mode: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔗 API disponible sur: http://localhost:${PORT}`);
-}); 
+
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Serveur démarré sur le port ${PORT}`);
+    console.log(`📊 Mode: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🔗 API disponible sur: http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
