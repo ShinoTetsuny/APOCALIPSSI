@@ -64,11 +64,11 @@ apiClient.interceptors.response.use(
 );
 
 /**
- * Analyse un fichier PDF
- * @param {File} file - Fichier PDF à analyser
+ * Analyse un document (PDF, Word, etc.)
+ * @param {File} file - Fichier document à analyser
  * @returns {Promise<Object>} - Résultats de l'analyse
  */
-export const analyzePDF = async (file) => {
+export const analyzeDocument = async (file) => {
   try {
     const formData = new FormData();
     formData.append('pdf', file);
@@ -99,10 +99,10 @@ export const checkAPIStatus = async () => {
 };
 
 /**
- * Vérifie le statut du service PDF
- * @returns {Promise<Object>} - Statut du service PDF
+ * Vérifie le statut du service de traitement de documents
+ * @returns {Promise<Object>} - Statut du service
  */
-export const checkPDFServiceStatus = async () => {
+export const checkDocumentServiceStatus = async () => {
   try {
     const response = await apiClient.get('/pdf/status');
     return response.data;

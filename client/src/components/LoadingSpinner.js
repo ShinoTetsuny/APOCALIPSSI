@@ -21,8 +21,9 @@ const LoadingSpinner = () => {
             Analyse en cours...
           </h3>
           
-          <p className="text-gray-600 max-w-md mx-auto">
-            Notre IA analyse votre document PDF. Cela peut prendre quelques instants.
+          <p className="text-lg text-gray-700 mb-2">Analyse en cours...</p>
+          <p className="text-gray-600">
+            Notre IA analyse votre document. Cela peut prendre quelques instants.
           </p>
 
           {/* Étapes du processus */}

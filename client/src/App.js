@@ -4,7 +4,7 @@ import AnalysisResults from './components/AnalysisResults';
 import Header from './components/Header';
 import LoadingSpinner from './components/LoadingSpinner';
 import ErrorMessage from './components/ErrorMessage';
-import { analyzePDF } from './services/apiService';
+import { analyzeDocument } from './services/apiService';
 
 function App() {
   const [file, setFile] = useState(null);
@@ -19,7 +19,7 @@ function App() {
     setLoading(true);
 
     try {
-      const result = await analyzePDF(uploadedFile);
+      const result = await analyzeDocument(uploadedFile);
       setAnalysis(result);
     } catch (err) {
       setError(err.message || 'Une erreur est survenue lors de l\'analyse');
@@ -83,7 +83,7 @@ function App() {
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-16">
         <div className="container mx-auto px-4 py-6 text-center text-gray-600">
-          <p>&copy; 2024 PDF Analyzer. Analyse intelligente de documents avec IA.</p>
+          <p>&copy; 2025 Document Analyzer. Analyse intelligente de documents avec IA.</p>
         </div>
       </footer>
     </div>

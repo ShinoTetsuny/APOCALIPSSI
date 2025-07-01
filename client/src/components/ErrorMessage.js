@@ -49,7 +49,7 @@ const ErrorMessage = ({ message, onRetry, onReset }) => {
           <div className="mt-6 p-4 bg-white rounded-lg border border-red-200 max-w-md mx-auto">
             <h4 className="font-medium text-gray-900 mb-2">Conseils de dépannage :</h4>
             <ul className="text-sm text-gray-700 space-y-1 text-left">
-              <li>• Vérifiez que le fichier est bien un PDF valide</li>
+              <li>• Vérifiez que le fichier est bien un document valide</li>
               <li>• Assurez-vous que la taille ne dépasse pas 10MB</li>
               <li>• Vérifiez votre connexion internet</li>
               <li>• Réessayez dans quelques instants</li>
