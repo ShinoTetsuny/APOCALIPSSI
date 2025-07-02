@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: apocalipssi-frontend
+    ports:
+      - "3000:80" # 3000 en local redirige vers le port 80 de Nginx dans le container
+    networks:
+      - appnet
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: pdf-analyzer-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./server/.env
+    depends_on:
+      - mongodb
+    networks:
+      - appnet
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:6
+    container_name: apocalipssi-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - appnet
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+
+networks:
+  appnet:
+    driver: bridge

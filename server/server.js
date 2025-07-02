@@ -3,8 +3,18 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
+// Connexion à MongoDB
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/apocalipssi')
+  .then(() => {
+    console.log('🗄️  Connexion à MongoDB réussie');
+  })
+  .catch((error) => {
+    console.error('❌ Erreur de connexion à MongoDB:', error);
+    process.exit(1);
+  });
 
 const pdfRoutes = require('./routes/pdfRoutes');
 const authRoutes = require('./routes/auth');

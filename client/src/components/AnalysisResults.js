@@ -1,8 +1,46 @@
 import React from 'react';
-import { FileText, CheckCircle, Lightbulb, RefreshCw } from 'lucide-react';
+import { FileText, CheckCircle, Lightbulb, RefreshCw, Download } from 'lucide-react';
 
 const AnalysisResults = ({ analysis, filename, onReset }) => {
   const { summary, keyPoints, suggestions, metadata } = analysis;
+
+  // Fonction pour télécharger le résumé
+  const downloadSummary = () => {
+    const content = `
+ANALYSE DU DOCUMENT: ${filename}
+==========================================
+
+RÉSUMÉ
+------
+${summary}
+
+POINTS CLÉS
+-----------
+${keyPoints.map((point, index) => `${index + 1}. ${point}`).join('\n')}
+
+SUGGESTIONS D'ACTIONS
+--------------------
+${suggestions.map((suggestion, index) => `${index + 1}. ${suggestion}`).join('\n')}
+
+MÉTADONNÉES
+-----------
+Modèle utilisé: ${metadata?.model || 'GPT-4'}
+Date d'analyse: ${new Date(metadata?.analysisDate).toLocaleString('fr-FR')}
+Taille du texte: ${metadata?.textLength?.toLocaleString()} caractères
+
+Généré le ${new Date().toLocaleString('fr-FR')}
+    `.trim();
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `analyse-${filename.replace(/\.[^/.]+$/, "")}-${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="space-y-6">
@@ -23,13 +61,23 @@ const AnalysisResults = ({ analysis, filename, onReset }) => {
             </div>
           </div>
           
-          <button
-            onClick={onReset}
-            className="btn btn-secondary flex items-center space-x-2"
-          >
-            <RefreshCw className="h-4 w-4" />
-            <span>Nouvelle analyse</span>
-          </button>
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={downloadSummary}
+              className="btn btn-primary flex items-center space-x-2"
+            >
+              <Download className="h-4 w-4" />
+              <span>Télécharger</span>
+            </button>
+            
+            <button
+              onClick={onReset}
+              className="btn btn-secondary flex items-center space-x-2"
+            >
+              <RefreshCw className="h-4 w-4" />
+              <span>Nouvelle analyse</span>
+            </button>
+          </div>
         </div>
       </div>
 

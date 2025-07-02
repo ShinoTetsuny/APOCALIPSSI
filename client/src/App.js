@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import AuthWrapper from './components/AuthWrapper';
 import FileUpload from './components/FileUpload';
 import AnalysisResults from './components/AnalysisResults';
 import Header from './components/Header';
@@ -6,11 +8,14 @@ import LoadingSpinner from './components/LoadingSpinner';
 import ErrorMessage from './components/ErrorMessage';
 import { analyzeDocument } from './services/apiService';
 
-function App() {
+// Composant principal de l'application avec authentification
+const MainApp = () => {
   const [file, setFile] = useState(null);
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  const { isAuthenticated, loading: authLoading } = useAuth();
 
   const handleFileUpload = async (uploadedFile) => {
     setFile(uploadedFile);
@@ -34,6 +39,24 @@ function App() {
     setError(null);
   };
 
+  // Affichage du chargement pendant la vérification de l'authentification
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Si l'utilisateur n'est pas authentifié, afficher les composants d'authentification
+  if (!isAuthenticated()) {
+    return <AuthWrapper />;
+  }
+
+  // Application principale pour les utilisateurs authentifiés
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -87,6 +110,14 @@ function App() {
         </div>
       </footer>
     </div>
+  );
+};
+
+function App() {
+  return (
+    <AuthProvider>
+      <MainApp />
+    </AuthProvider>
   );
 }
 
