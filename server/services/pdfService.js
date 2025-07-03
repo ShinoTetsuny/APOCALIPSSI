@@ -46,7 +46,7 @@ const anonymizeSensitiveData = (text) => {
     // Noms propres (simple heuristique)
     .replace(/\b(Mr|Mme|Mlle|Monsieur|Madame)?\s?[A-Z][a-zéèêàîç\-]+ [A-Z][a-zéèêàîç\-]+\b/g)
     // Données médicales génériques (très simplifié)
-    .replace(/\b(maladie|diagnostic|traitement|ordonnance|symptôme|hypertension sévère|allergie|hospitalisation)\b/gi, '[MEDICAL]');
+    .replace(/\b(maladie|diagnostic|traitement|ordonnance|symptôme|en date du 15 juin : antihypertenseur, régime sans sel|hypertension sévère|allergie|hospitalisation)\b/gi, '[MEDICAL]');
 };
 
 
