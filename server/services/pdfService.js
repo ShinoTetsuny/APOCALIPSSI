@@ -1,6 +1,7 @@
 const fs = require('fs');
 const pdfParse = require('pdf-parse');
 const { analyzeWithOpenAI } = require('./openaiService');
+const { analyzeWithMistral } = require('../models/MistralRequest');
 
 /**
  * Extrait le texte d'un fichier PDF
@@ -40,7 +41,7 @@ const analyzePDF = async (filePath) => {
     const extractedText = await extractTextFromPDF(filePath);
     
     // Étape 2: Analyse avec OpenAI
-    const analysis = await analyzeWithOpenAI(extractedText);
+    const analysis = await analyzeWithMistral(extractedText);//await analyzeWithOpenAI(extractedText)
     
     console.log('✅ Analyse terminée avec succès');
     
@@ -51,7 +52,7 @@ const analyzePDF = async (filePath) => {
       metadata: {
         textLength: extractedText.length,
         analysisDate: new Date().toISOString(),
-        model: 'gpt-4'
+        model: 'mistral'
       }
     };
     
