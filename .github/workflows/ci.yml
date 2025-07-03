@@ -22,5 +22,10 @@ jobs:
       - name: Installer les dépendances
         run: npm install
 
+      - name: Démarrer MongoDB
+        uses: supercharge/mongodb-github-action@1.8.0
+        with:
+          mongodb-version: '6.0'
+          
       - name: Lancer les tests
         run: npm test
