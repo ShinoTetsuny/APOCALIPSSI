@@ -27,6 +27,28 @@ const extractTextFromPDF = async (filePath) => {
     throw new Error(`Impossible d'extraire le texte du PDF: ${error.message}`);
   }
 };
+/**
+ * Anonymise les données personnelles dans un texte brut
+ * @param {string} text - Texte à anonymiser
+ * @returns {string} - Texte anonymisé
+ */
+const anonymizeSensitiveData = (text) => {
+  return text
+    // Adresses e-mail
+    .replace(/([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, '[EMAIL]')
+    // Numéros de téléphone (français ou génériques)
+    .replace(/(\+?\d{1,3}[ \-\.]?)?(\(?\d{2,4}\)?[ \-\.]?)?[\d \-\.]{6,}/g, '[PHONE]')
+    // Numéros de compte/RIB/IBAN
+    .replace(/\b([A-Z]{2}\d{2}[ ]?[0-9A-Z]{4,})(?:[ ]?[0-9A-Z]{4,}){1,5}\b/g, '[IBAN]')
+    .replace(/\b\d{11,26}\b/g, '[ACCOUNT_NUMBER]')
+    // Adresses postales (simplifiées)
+    .replace(/\d{1,4}[^\n\r,]+(rue|avenue|boulevard|chemin|impasse|allée)[^\n\r]+/gi, '[ADDRESS]')
+    // Noms propres (simple heuristique)
+    .replace(/\b(Mr|Mme|Mlle|Monsieur|Madame)?\s?[A-Z][a-zéèêàîç\-]+ [A-Z][a-zéèêàîç\-]+\b/g)
+    // Données médicales génériques (très simplifié)
+    .replace(/\b(maladie|diagnostic|traitement|ordonnance|symptôme|hypertension sévère|allergie|hospitalisation)\b/gi, '[MEDICAL]');
+};
+
 
 /**
  * Analyse complète d'un PDF
@@ -40,8 +62,11 @@ const analyzePDF = async (filePath) => {
     // Étape 1: Extraction du texte
     const extractedText = await extractTextFromPDF(filePath);
     
+    //Etape 2: Anonymisation du texte
+    const anonymizedText = await anonymizeSensitiveData(extractedText);
+    
     // Étape 2: Analyse avec OpenAI
-    const analysis = await analyzeWithMistral(extractedText);//await analyzeWithOpenAI(extractedText)
+    const analysis = await analyzeWithMistral(anonymizedText);//await analyzeWithOpenAI(anonymizedText)
     
     console.log('✅ Analyse terminée avec succès');
     
