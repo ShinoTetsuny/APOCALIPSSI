@@ -24,7 +24,6 @@ ${suggestions.map((suggestion, index) => `${index + 1}. ${suggestion}`).join('\n
 
 MÉTADONNÉES
 -----------
-Modèle utilisé: ${metadata?.model || 'GPT-4'}
 Date d'analyse: ${new Date(metadata?.analysisDate).toLocaleString('fr-FR')}
 Taille du texte: ${metadata?.textLength?.toLocaleString()} caractères
 
@@ -147,10 +146,6 @@ Généré le ${new Date().toLocaleString('fr-FR')}
       {metadata && (
         <div className="card bg-gray-50">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
-            <div>
-              <span className="font-medium">Modèle utilisé:</span>
-              <p>{metadata.model || 'GPT-4'}</p>
-            </div>
             <div>
               <span className="font-medium">Date d'analyse:</span>
               <p>{new Date(metadata.analysisDate).toLocaleString('fr-FR')}</p>
